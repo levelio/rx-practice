@@ -5,3 +5,6 @@
 2. 运行方式:
   > npm start
 3. 提交作业请以 PR 方式
+
+## 换种思考方式
+![stream](./assets/stream.jpeg)
