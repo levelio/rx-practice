@@ -1,0 +1,27 @@
+{
+  "name": "rx-practice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel ./src/01/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Simlesos/rx-practice.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Simlesos/rx-practice/issues"
+  },
+  "homepage": "https://github.com/Simlesos/rx-practice#readme",
+  "dependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "rxjs": "^6.4.0",
+    "sass": "^1.18.0",
+    "typescript": "^3.4.3"
+  }
+}
