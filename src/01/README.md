@@ -7,3 +7,4 @@
 ![demo](./assets/demo.gif)
 
 2. html 和 css 已经给出，请不要修改
+3. 作业以PR方式提交
