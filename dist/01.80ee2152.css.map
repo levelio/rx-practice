@@ -1,1 +1,0 @@
-{"version":3,"sources":["index.scss"],"names":[],"mappings":"AAAA;EACE;EACA;EACA","file":"01.80ee2152.css","sourceRoot":"../src/01","sourcesContent":[".box {\n  width: 100px;\n  height: 100px;\n  background: red;\n}"]}
