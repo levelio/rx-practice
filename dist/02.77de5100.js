@@ -117,79 +117,93 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"index.ts":[function(require,module,exports) {
+var $ = function $(selectors) {
+  return document.querySelector(selectors);
+};
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
+var $$ = function $$(selectors) {
+  return document.querySelectorAll(selectors);
+};
 
-  return bundleURL;
-}
+var navList = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+var holdItemDom = document.createElement("div");
+holdItemDom.classList.add("item", "hold");
+var listDom = document.createElement("div");
+listDom.classList.add("items");
+navList.forEach(function (v, i) {
+  var itemDom = document.createElement("div");
+  itemDom.classList.add("item");
+  itemDom.dataset.sortindex = i;
+  itemDom.textContent = v;
+  listDom.appendChild(itemDom);
+});
+$(".box").appendChild(listDom); //主要代码
 
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+var dragObj; //考虑到item数量会很多，不需要给每个item单独绑定mousedown,mousemove,mouseup事件
 
-    if (matches) {
-      return getBaseURL(matches[0]);
+listDom.onmousedown = function (event) {
+  var currenIndex, previousIndex;
+  var itemDomList = $$(".items .item");
+  var listLength = navList.length;
+  var startY = event.clientY; //找到mousedown的item
+
+  var selectIndex;
+  dragObj = event.target;
+  Array.from(itemDomList).forEach(function (v, i) {
+    if (v === event.target) {
+      selectIndex = i;
     }
-  }
+  });
+  dragObj.after(holdItemDom);
+  dragObj.classList.add("select");
+  dragObj.style.top = dragObj.clientHeight * selectIndex + "px";
+  var itemHeight = dragObj.clientHeight;
+  var topIndex = selectIndex;
+  var startTop = dragObj.style.top;
+  previousIndex = Math.ceil((parseInt(startTop) - itemHeight / 2) / itemHeight);
 
-  return '/';
-}
+  document.onmousemove = function (event) {
+    dragObj.classList.add("select");
+    var moveY = event.clientY;
+    var presentTop = parseInt(startTop) + (moveY - startY);
+    dragObj.style.top = presentTop + "px";
+    currenIndex = Math.ceil((presentTop - itemHeight / 2) / itemHeight);
+    if (currenIndex < 0) currenIndex = 0;
+    if (currenIndex > listLength - 1) currenIndex = listLength - 1;
 
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
+    if (previousIndex !== currenIndex) {
+      holdItemDom.remove();
 
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
+      if (previousIndex > currenIndex && currenIndex < topIndex) {
+        dragObj.remove();
+        itemDomList[currenIndex].before(dragObj);
+        dragObj.after(holdItemDom);
+      } else {
+        var currentItems = $$(".box .item");
+        currentItems[currenIndex].after(holdItemDom);
+      }
 
-function updateLink(link) {
-  var newLink = link.cloneNode();
-
-  newLink.onload = function () {
-    link.remove();
+      previousIndex = currenIndex;
+      if (currenIndex < topIndex) topIndex = currenIndex;
+    }
   };
 
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
+  document.onmouseup = function (event) {
+    var currentItems = $$(".box .item");
 
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
+    if (currenIndex > topIndex) {
+      currentItems[currenIndex].after(dragObj);
     }
 
-    cssTimeout = null;
-  }, 50);
-}
-
-module.exports = reloadCSS;
-},{"./bundle-url":"../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"index.scss":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+    holdItemDom.remove();
+    dragObj.classList.remove("select");
+    dragObj.removeAttribute("style");
+    document.onmousemove = null;
+    document.onmouseup = null;
+  };
+};
+},{}],"../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -217,7 +231,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59999" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60184" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -392,5 +406,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/01.80ee2152.js.map
+},{}]},{},["../../../../.nvm/versions/node/v8.9.1/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.ts"], null)
+//# sourceMappingURL=/02.77de5100.js.map
